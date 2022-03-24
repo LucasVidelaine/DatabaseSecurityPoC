@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8">
+
+	<title>WebUI - Middleware Client</title>
+	<meta name="description" content="A WebUI for the Middleware Client of the Secure Database Project">
+	<meta name="author" content="VIDELAINE & LUBISHTANI-BIZET">
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+	<script type="text/javascript">
+		function check() {
+			if(document.getElementById("choice3").checked){
+				document.getElementById("inputChoice3").style.display = "block";
+			}else{
+				document.getElementById("inputChoice3").style.display = "none";
+			}
+			if(document.getElementById("choice4").checked){
+				document.getElementById("inputChoice4").style.display = "block";
+			}else{
+				document.getElementById("inputChoice4").style.display = "none";
+			}
+			if(document.getElementById("choice5").checked){
+				document.getElementById("inputChoice5").style.display = "block";
+			}else{
+				document.getElementById("inputChoice5").style.display = "none";
+			}
+			if(document.getElementById("choice6").checked){
+				document.getElementById("inputChoice6").style.display = "block";
+			}else{
+				document.getElementById("inputChoice6").style.display = "none";
+			}
+			if(document.getElementById("choice7").checked){
+				document.getElementById("inputChoice7").style.display = "block";
+			}else{
+				document.getElementById("inputChoice7").style.display = "none";
+			}
+		}
+		
+		function button(){
+			if(document.getElementById("choice1").checked == true || document.getElementById("choice2").checked == true) { 
+				document.getElementById("bouton").disabled = false;
+			}else if(document.getElementById("choice3").checked == true && document.getElementById("inputChoice3text1").value != "" && document.getElementById("inputChoice3text2").value != ""){ 
+				document.getElementById("bouton").disabled = false; 
+			}else if(document.getElementById("choice4").checked == true && document.getElementById("inputChoice4text1").value != "" && document.getElementById("inputChoice4text2").value != ""){ 
+				document.getElementById("bouton").disabled = false; 
+			}else if(document.getElementById("choice5").checked == true && document.getElementById("inputChoice5text1").value != ""){ 
+				document.getElementById("bouton").disabled = false; 
+			}else if(document.getElementById("choice6").checked == true && document.getElementById("inputChoice6text1").value != "" && document.getElementById("inputChoice6text2").value != ""){ 
+				document.getElementById("bouton").disabled = false; 
+			}else if(document.getElementById("choice7").checked == true && document.getElementById("inputChoice7text1").value != "" && document.getElementById("inputChoice7text2").value != ""){ 
+				document.getElementById("bouton").disabled = false; 
+			}else{ 
+				document.getElementById("bouton").disabled = true;
+			}
+		}
+
+		function execute(){
+			if(document.getElementById("choice1").checked == true){ 
+				var payload = {
+					"choice": "1"
+				}
+			}else if(document.getElementById("choice2").checked == true){
+				var payload = {
+					"choice": "2"
+				}
+			}else if(document.getElementById("choice3").checked == true && document.getElementById("inputChoice3text1").value != "" && document.getElementById("inputChoice3text2").value != ""){ 
+				var payload = {
+					"choice": "3",
+					"param1": document.getElementById("inputChoice3text1").value,
+					"param2": document.getElementById("inputChoice3text2").value
+				}
+			}else if(document.getElementById("choice4").checked == true && document.getElementById("inputChoice4text1").value != "" && document.getElementById("inputChoice4text2").value != ""){ 
+				var payload = {
+					"choice": "4",
+					"param1": document.getElementById("inputChoice4text1").value,
+					"param2": document.getElementById("inputChoice4text2").value
+				}
+			}else if(document.getElementById("choice5").checked == true && document.getElementById("inputChoice5text1").value != ""){ 
+				var payload = {
+					"choice": "5",
+					"param1": document.getElementById("inputChoice5text1").value
+				}
+			}else if(document.getElementById("choice6").checked == true && document.getElementById("inputChoice6text1").value != "" && document.getElementById("inputChoice6text2").value != ""){ 
+				var payload = {
+					"choice": "6",
+					"param1": document.getElementById("inputChoice6text1").value,
+					"param2": document.getElementById("inputChoice6text2").value
+				}
+			}else if(document.getElementById("choice7").checked == true && document.getElementById("inputChoice7text1").value != "" && document.getElementById("inputChoice7text2").value != ""){ 
+				var payload = {
+					"choice": "7",
+					"param1": document.getElementById("inputChoice7text1").value,
+					"param2": document.getElementById("inputChoice7text2").value
+				}
+			}else{ 
+				var payload = null;
+			}
+			if(payload == null){
+				document.getElementById("result").innerHTML = "ERROR";
+			}else{
+				//console.log(payload);
+				request(payload);
+			}
+		}
+		function request(payload){
+			$.ajax({
+				type: "POST",
+				url: "/",
+				data: payload,
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success: (msg) => {
+					document.getElementById("result").innerHTML = msg["response"];
+				}
+			});
+		}
+	</script>
+
+</head>
+
+<body onload="check();button();">
+
+	<p>Choisissez une action</p>
+	<div>
+	  <input type="radio" id="choice1" name="choice" value="choice1" onclick="check();button();">
+	  <label for="choice1">Afficher la table Age chiffrée</label>
+	</div>
+
+	<div>
+	  <input type="radio" id="choice2" name="choice" value="choice2" onclick="check();button();">
+	  <label for="choice2">Afficher la table Age déchiffrée</label>
+	</div>
+
+	<div>
+	  <input type="radio" id="choice3" name="choice" value="choice3" onclick="check();button();">
+	  <label for="choice3">Insérer une nouvelle personne</label>
+	</div>
+	
+	<div id="inputChoice3" style="display:none">
+		<input type="text" id="inputChoice3text1" placeholder="Nom" onkeyup="button()">
+		<input type="number" id="inputChoice3text2" placeholder="Age" onkeyup="button()">
+	</div>
+	
+	<div>
+	  <input type="radio" id="choice4" name="choice" value="choice4" onclick="check();button();">
+	  <label for="choice4">Mettre à jour une personne</label>
+	</div>
+	
+	<div id="inputChoice4" style="display:none">
+		<input type="text" id="inputChoice4text1" placeholder="Nom" onkeyup="button()">
+		<input type="number" id="inputChoice4text2" placeholder="Age" onkeyup="button()">
+	</div>
+	
+	<div>
+	  <input type="radio" id="choice5" name="choice" value="choice5" onclick="check();button();">
+	  <label for="choice5">Supprimer une personne</label>
+	</div>
+	
+	<div id="inputChoice5" style="display:none">
+		<input type="text" id="inputChoice5text1" placeholder="Nom" onkeyup="button()">
+	</div>
+	
+	<div>
+	  <input type="radio" id="choice6" name="choice" value="choice6" onclick="check();button();">
+	  <label for="choice6">Additionner les âges de deux personnes</label>
+	</div>
+	
+	<div id="inputChoice6" style="display:none">
+		<input type="text" id="inputChoice6text1" placeholder="Nom 1" onkeyup="button()">
+		<input type="text" id="inputChoice6text2" placeholder="Nom 2" onkeyup="button()">
+	</div>
+	
+	<div>
+	  <input type="radio" id="choice7" name="choice" value="choice7" onclick="check();button();">
+	  <label for="choice7">Comparer les âges de deux personnes</label>
+	</div>
+	
+	<div id="inputChoice7" style="display:none">
+		<input type="text" id="inputChoice7text1" placeholder="Nom 1" onkeyup="button()">
+		<input type="text" id="inputChoice7text2" placeholder="Nom 2" onkeyup="button()">
+	</div>
+	
+	<div>
+		<br/>
+		<button type="submit" id="bouton" disabled onclick="execute()">Exécuter</button>
+	</div>
+	<br/>
+	<div id="result">
+	</div>
+	
+</body>
+</html>

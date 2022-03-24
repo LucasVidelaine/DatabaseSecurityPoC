@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+    db:
+      image: mysql:latest
+      environment:
+        MYSQL_DATABASE: 'TP2022_VIDELAINE-LUBISHTANI-BIZET'
+        MYSQL_USER: 'lulutoto'
+        MYSQL_PASSWORD: 'Ensibs2022!'
+        MYSQL_ROOT_PASSWORD: 'Ensibs2022!'
+      ports:
+        - '3306:3306'
+      volumes:
+        - ./db:/var/lib/mysql
+
+    server:
+      build:
+        context: .
+        dockerfile: Dockerfile-server
+      ports:
+        - 5000:5000
+      volumes:
+        - ./app-server:/app
+      links:
+        - db
+      tty: true
+      command: bash -c "python server.py"
+    
+    client:
+      build:
+        context: .
+        dockerfile: Dockerfile-client
+      ports:
+        - 8000:8000
+      volumes:
+        - ./app-client:/app
+      links:
+        - db
+        - server
+      tty: true
+      command: bash -c "python client.py"
