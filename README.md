@@ -2,13 +2,21 @@
 
 Projet réalisé dans le cadre du module de "Sécurité des bases de données", dispensé en 4ème année de formation Ingénieur Cyberdéfense à l'ENSIBS.
 
-## Contexte
+## Enoncé du projet
 
-Définissez une nouvelle base mysql avec une table dont une colonne contenant des entiers est chiffrée à l'aide d'un algorithme préservant la relation d'ordre — aka. Order Revealing Encryption — (afin que les requêtes sur intervalles soient permises), puis donnez l'implémentation (en python, c, ou java) du middleware et d'une application cliente de cette base illustrant la récupération et le déchiffrement des informations de la base ainsi que le bon fonctionnement de la relation d'ordre.
+### Consigne n°1
 
-Focalisez-vous sur la preuve de fonctionnement, on n'attend pas ici un produit fini avec parseur de requête, une application cliente effectuant une requête sur intervalle, vérifiant la réponse, et terminant, est suffisant.
+Définissez une nouvelle base MySQL avec une table dont une colonne contenant des entiers est chiffrée à l'aide d'un algorithme préservant la relation d'ordre — aka. Order Revealing Encryption — (afin que les requêtes sur intervalles soient permises), puis donnez l'implémentation (en Python, C, ou Java) du middleware et d'une application cliente de cette base illustrant la récupération et le déchiffrement des informations de la base ainsi que le bon fonctionnement de la relation d'ordre.
+Focalisez-vous sur la preuve de fonctionnement, nous n'attendons pas ici un produit fini avec parseur de requête, mais une application cliente effectuant une requête sur intervalle, vérifiant la réponse, et terminant.
 
-### Explications
+### Consigne n°2
+
+Nous souhaitons effectuer une opération à distance sur des données qui nous appartiennent, sans pour autant révéler à la machine distante le contenu de ces données. Implémentez un middleware côté serveur, capable d'effectuer une somme sur des données chiffrées par un client (le client est en mesure de déchiffrer cette somme).
+Combinez les deux middlewares afin que :
+- il soit possible de comparer des entiers chiffrées (cf. relation d'ordre)
+- il soit possible d'additionner des entiers chiffrées
+
+## Rapport
 
 Notre architecture est une nouvelle fois basée sur Docker. Elle est composée d'un serveur MySQL, d'un container exécutant le Middleware client, et d'un container exécutant le Middleware serveur.
 Voici le fichier docker-compose.yml qui permet de démarrer les services.
@@ -90,15 +98,5 @@ D'un point de vue utilisation, l’utilisateur précise le nom ainsi que la vale
 
 
 
-## Question 31 (Bis)
 
-On souhaite effectuer une opération à distance sur des données qui nous appartiennent, sans pour autant révéler à la machine distante le contenu de ces données. Implémentez un middleware côté serveur, capable d'effectuer une somme sur des données chiffrées par un client (le client est en mesure de déchiffrer cette somme).
-Combinez les deux middlewares afin que :
-- il soit possible de comparer des entiers chiffrées (cf. relation d'ordre)
-- il soit possible d'additionner des entiers chiffrées
 
-### Requêtes
-
-### Réponses du SGBD
-
-### Explications
