@@ -1,6 +1,6 @@
 # DatabaseSecurityPoC
 
-
+Projet réalisé dans le cadre du module de "Sécurité des bases de données", dispensé en 4ème année de formation Ingénieur Cyberdéfense à l'ENSIBS.
 
 ## Contexte
 
