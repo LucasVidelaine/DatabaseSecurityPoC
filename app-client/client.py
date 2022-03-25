@@ -72,7 +72,7 @@ def db_afficher_clair(cnx,cipherORE):
         result += x[0] + "-->" + str(ageClair) + "<br />"
     return result
 
-def db_compare_age(cnx, nom1, nom2):
+def db_compare(cnx, nom1, nom2):
     # Selection des ages chiffres en fonction des noms
     cur = cnx.cursor()
     # Age 1
@@ -200,7 +200,7 @@ def webui():
             nom1 = params[1].split("=")[1]
             nom2 = params[2].split("=")[1]
             connec = db_connexion(db_user,db_password,db_host,db_db)
-            result = db_compare_age(connec, nom1, nom2)
+            result = db_compare(connec, nom1, nom2)
             return json.dumps({"response":result})
             
         return json.dumps({"response":"ERREUR"})
