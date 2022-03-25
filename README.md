@@ -158,7 +158,7 @@ L'environnement Docker reprend celui présenté lors du chiffrement ORE, avec ma
 Le chiffrement homomorphique commence par l’établissement de la paire de clés, une nouvelle fois pour faciliter la preuve de concept, nous générerons une paire de clés avec nos propres valeurs de p et q inscrites en dur dans le code de l'application.
 ```python
 # Paire de clés pour le chiffrement homomorphique
-public_key= paillier.PaillierPublicKey(2161831391)
+public_key = paillier.PaillierPublicKey(2161831391)
 private_key = paillier.PaillierPrivateKey(public_key, 47147,45853)
 ```
 La librairie du cryptosystème de Paillier retourne lors de la génération de clés des objets sur lesquels des attributs et méthodes sont disponibles. C'est justement certaines de ces méthodes propres à la libraire que nous allons exploiter par la suite : *encrypt* et *decrypt*\
@@ -193,4 +193,5 @@ def transfertEncryptedNumber():
     updateHOMage(data.get('nom'), receivedEncrypted)
     return "JSON received & HOM updated"
 ```
-
+Pour résumé, étant donné que la clé privée est stockée côté client, les données en base de données sont sécurisées. En revanche, ce type de chiffrement devient intéressant puisque la clé publique est directement stockée dans la base de données. Comme observé, par définition, l’addition homomorphique n’ayant besoin que de la clé publique pour additionner deux données chiffrées, toutes les données stockées en base peuvent être manipulées en garantissant la confidentialité du calcul.
+En effet, comme nous allons le voir dans les prochaines requêtes, lors de la demande d’un calcul par le client, les requêtes viendront directement récupérer l’intégralité de l’objet requêté pour pouvoir effectuer une somme du côté du serveur. Cette fonctionnalité permet alors une protection optimale des données côté base de données car seul le middleware client, disposant de la clé privée, sera capable de déchiffrer le contenu de l’objet.

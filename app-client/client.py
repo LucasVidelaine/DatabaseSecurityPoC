@@ -109,7 +109,8 @@ def webui():
     
         # Déclaration des variables
         cipherORE = generer_cle(b'long key' * 2)
-        public_key= paillier.PaillierPublicKey(2161831391)
+        # Paire de clés pour le chiffrement homomorphique
+        public_key = paillier.PaillierPublicKey(2161831391)
         private_key = paillier.PaillierPrivateKey(public_key, 47147,45853)
     
         data = request.data.decode("utf-8")
