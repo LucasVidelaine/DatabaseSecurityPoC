@@ -90,7 +90,7 @@ L'application Middleware client est donc une preuve de concept répondant au pri
 - Un utilisateur intéragit, à l'aide de la WebUI et au travers du middleware, avec la base de données (ici permettant de stocker des personnes et leurs âges au sein de la table "age").
 - La base de données stocke donc le nom de la personne (varchar(30)), et son âge (int) de façon chiffrée.
 
-![SCHEMA_LOGIQUE](https://user-images.githubusercontent.com/26573507/160184533-0c42b93e-93b1-4c39-b140-8e136bd9660e.png)
+![SCHEMA_LOGIQUE_CLIENT](https://user-images.githubusercontent.com/26573507/160190215-cde179f9-c84a-4674-85b8-16eab4b211d6.png)
 
 Nous souhaitons montrer l’implémentation d’un chiffrement de type ORE (Order Revealing Encryption) permettant l’insertion de valeurs chiffrées au sein d’une table "age" contenant des âges. Ces âges seront donc stockés chiffrés. L’avantage d’un chiffrement ORE est qu’il conserve la relation d’ordre, ainsi, le SGBD pourra parfaitement répondre à des requêtes de comparaison sur ce type de données, tout en garantissant leur confidentialité lors des requêtes.
 Afin de fonctionner, l'algorithme nécessite l'usage d'un clé. Dans notre cas, et par soucis de facilité, nous avons inscrit cette clé en dur dans le code client du middleware.
@@ -149,7 +149,7 @@ Le principal avantage du cryptosystème de Paillier est qu'il fait parti des mod
 
 Maintenant, concernant le middleware mis en place pour répondre à notre besoin, nous avons adapté notre middleware client afin qu'il puisse s'interfacer avec un middleware serveur. D'un point de vue fonctionnement, le chiffrement des données est réalisé par le middleware client (une nouvelle fois la paire de clé est stocké en dur dans le programme client pour plus de simplicité) puis envoyé au middleware serveur afin qu'il effectue les opérations et interactions avec le serveur MySQL. Le serveur reçoit alors des demandes de stockage, mise à jour, ou encore d'addition, qu'il traite avant de répondre au client. C'est finalement le client qui déchiffre les réponses au besoin.
 
-!!SCHEMA LOGIQUE SERVEUR!!
+![SCHEMA_LOGIQUE_SERVEUR](https://user-images.githubusercontent.com/26573507/160190248-ab708706-7a4d-48fc-b02c-99e3ad42d7a8.png)
 
 L'ensemble des données seront chiffrées côté client. Le chiffrement homomorphique des données permettra au serveur d'effectuer des opérations mathématiques et également de stocker et traiter des informations vers la base de données MysQL distante.
 
