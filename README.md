@@ -153,4 +153,44 @@ Maintenant, concernant le middleware mis en place pour répondre à notre besoin
 
 L'ensemble des données seront chiffrées côté client. Le chiffrement homomorphique des données permettra au serveur d'effectuer des opérations mathématiques et également de stocker et traiter des informations vers la base de données MysQL distante.
 
-L'environnement Docker reprend celui présenté lors du chiffrement ORE, avec maintenant une brique serveur supplémentaire. Pour cela, nous utilisons un container Python Flask où le programme *server.py* écoutera sur le port 5000.
+L'environnement Docker reprend celui présenté lors du chiffrement ORE, avec maintenant une brique serveur supplémentaire et une colonne supplémentaire dans la base de données. Pour cela, nous utilisons un container Python Flask où le programme *server.py* écoutera sur le port 5000.
+
+Le chiffrement homomorphique commence par l’établissement de la paire de clés, une nouvelle fois pour faciliter la preuve de concept, nous générerons une paire de clés avec nos propres valeurs de p et q inscrites en dur dans le code de l'application.
+```python
+# Paire de clés pour le chiffrement homomorphique
+public_key= paillier.PaillierPublicKey(2161831391)
+private_key = paillier.PaillierPrivateKey(public_key, 47147,45853)
+```
+La librairie du cryptosystème de Paillier retourne lors de la génération de clés des objets sur lesquels des attributs et méthodes sont disponibles. C'est justement certaines de ces méthodes propres à la libraire que nous allons exploiter par la suite : *encrypt* et *decrypt*\
+La première méthode est *encrypt* :
+```python
+ageHOM = public_key.encrypt(age)
+```
+Elle permet le chiffrement de l'âge en clair saisi par l'utilisateur, grâce à la clé publique. Un objet est retourné en sortie de cette méthode, et est composé de 3 attributs distincts : la *public_key*, la donnée chiffrée *ciphertext*, et un exposant *exponent*. Ces informations sont essentielles au bon fonctionnement de notre middleware serveur, et ce sont elles que nous irons stocker dans notre base de données à la fin des traitements par le middleware serveur.\
+Notre middleware client doit donc transmettre ces informations au middleware serveur, nous utilisons pour cela Flask afin d'envoyer des requêtes contenants des données JSON entre les deux programmes à l'aide du réseau. 
+```python
+ageHOM = public_key.encrypt(age)
+# Decomposition de la serie composant l'objet ageHOM
+serieHOM = {'public_key': public_key.n, 'ciphertext': str(ageHOM.ciphertext()), 'exponent': ageHOM.exponent}
+# Dump de la serie pour exploitation par le serveur distant
+serialized = json.dumps(serieHOM)
+# Envoi vers l'app serveur
+payload = {'nom':str(nom), 'HOM_age':serialized}
+# Envoi du payload vers l'app serveur
+r = requests.post("http://"+server_host+":5000/encrypted", json=payload)
+```
+Il nous suffit alors de récupérer les informations qui nous intéressent dans l'objet généré par *encrypt* afin de les sérialiser au format JSON. Ainsi, nous pouvons transmettre les données à l'aide du requête POST vers le middleware serveur.\
+Sur le serveur, nous récupérons la requête reçue sur la route */encrypted* prévue et avec la méthode POST attendue. Une fois cela fait, il nous suffit de transmettre les informations à une fonction permettant la mise à jour de la donnée dans la table *age*.
+```python
+#Page servant à l'ajout du HOM_age à la base de données
+@app.route('/encrypted', methods=['POST'])
+def transfertEncryptedNumber():
+    print(request.is_json)
+    data= request.get_json()
+    print(data)
+    receivedEncrypted = data.get('HOM_age')
+    print(receivedEncrypted)
+    updateHOMage(data.get('nom'), receivedEncrypted)
+    return "JSON received & HOM updated"
+```
+
