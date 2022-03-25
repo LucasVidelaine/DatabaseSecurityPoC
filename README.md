@@ -105,11 +105,7 @@ D'un point de vue utilisation, l’utilisateur précise le nom ainsi que la vale
 
 ![WEBUI](https://user-images.githubusercontent.com/26573507/160178105-665354a4-1b55-4604-924a-707bff54049e.png)
 
-L’implémentation finale reprend le principe logique suivant, qui confirme le fonctionnement de la relation d’ordre lors de requêtes de comparaison :
-
-!!SCHEMA IMPLEMENTATION!!
-
-Voici maintenant un aperçu de l'exécution des fonctions présentent :
+L’implémentation finale confirme le fonctionnement de la relation d’ordre lors de requêtes de comparaison, voici un aperçu de l'exécution des fonctions présentent :
 
 - Afficher la table Age chiffrée
 
