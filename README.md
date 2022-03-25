@@ -90,7 +90,7 @@ L'application Middleware client est donc une preuve de concept répondant au pri
 - Un utilisateur intéragit, à l'aide de la WebUI et au travers du middleware, avec la base de données (ici permettant de stocker des personnes et leurs âges au sein de la table "age").
 - La base de données stocke donc le nom de la personne (varchar(30)), et son âge (int) de façon chiffrée.
 
-!!SCHEMA LOGIQUE CLIENT!!
+![SCHEMA_LOGIQUE](https://user-images.githubusercontent.com/26573507/160184533-0c42b93e-93b1-4c39-b140-8e136bd9660e.png)
 
 Nous souhaitons montrer l’implémentation d’un chiffrement de type ORE (Order Revealing Encryption) permettant l’insertion de valeurs chiffrées au sein d’une table "age" contenant des âges. Ces âges seront donc stockés chiffrés. L’avantage d’un chiffrement ORE est qu’il conserve la relation d’ordre, ainsi, le SGBD pourra parfaitement répondre à des requêtes de comparaison sur ce type de données, tout en garantissant leur confidentialité lors des requêtes.
 Afin de fonctionner, l'algorithme nécessite l'usage d'un clé. Dans notre cas, et par soucis de facilité, nous avons inscrit cette clé en dur dans le code client du middleware.
@@ -103,7 +103,7 @@ D'un point de vue utilisation, l’utilisateur précise le nom ainsi que la vale
 - Additionner les âges de deux personnes
 - Comparer les âges de deux personnes 
 
-![1](https://user-images.githubusercontent.com/26573507/160178105-665354a4-1b55-4604-924a-707bff54049e.png)
+![WEBUI](https://user-images.githubusercontent.com/26573507/160178105-665354a4-1b55-4604-924a-707bff54049e.png)
 
 L’implémentation finale reprend le principe logique suivant, qui confirme le fonctionnement de la relation d’ordre lors de requêtes de comparaison :
 
@@ -113,27 +113,27 @@ Voici maintenant un aperçu de l'exécution des fonctions présentent :
 
 - Afficher la table Age chiffrée
 
-![2](https://user-images.githubusercontent.com/26573507/160178136-5102c92b-45c9-4333-be35-d3065d7ba1c2.png)
+![FUNCTION_1](https://user-images.githubusercontent.com/26573507/160178136-5102c92b-45c9-4333-be35-d3065d7ba1c2.png)
 
 - Afficher la table Age déchiffrée
 
-![3](https://user-images.githubusercontent.com/26573507/160178166-6967b97a-c194-4de8-bd39-2584e4962d68.png)
+![FUNCTION_2](https://user-images.githubusercontent.com/26573507/160178166-6967b97a-c194-4de8-bd39-2584e4962d68.png)
 
 - Insérer une nouvelle personne
 
-![4](https://user-images.githubusercontent.com/26573507/160178193-653c1aae-c36f-4af4-9ec4-586b38c2d259.png)
+![FUNCTION_3](https://user-images.githubusercontent.com/26573507/160178193-653c1aae-c36f-4af4-9ec4-586b38c2d259.png)
 
 - Mettre à jour une personne
 
-![5](https://user-images.githubusercontent.com/26573507/160178214-45a17e30-220b-465d-b8c6-17298b4d412d.png)
+![FUNCTION_4](https://user-images.githubusercontent.com/26573507/160178214-45a17e30-220b-465d-b8c6-17298b4d412d.png)
 
 - Supprimer une personne
 
-![6](https://user-images.githubusercontent.com/26573507/160178230-766aa7ba-c1fc-4459-b948-17fab9c9f434.png)
+![FUNCTION_5](https://user-images.githubusercontent.com/26573507/160178230-766aa7ba-c1fc-4459-b948-17fab9c9f434.png)
 
 - Comparer les âges de deux personnes 
 
-![8](https://user-images.githubusercontent.com/26573507/160178284-a09cdbb2-ba21-4a42-80d5-da79d0490c72.png)
+![FUNCTION_6](https://user-images.githubusercontent.com/26573507/160178284-a09cdbb2-ba21-4a42-80d5-da79d0490c72.png)
 
 Pour conclure cette implémentation d'algorithme ORE, nous pouvons dire qu'il permet de garantir la confidentialité des données, mais les comparaisons permettent tout de même de récupérer des informations importantes de notre table. En effet, nous pouvons connaître les relations d'ordre qui sont en vigueur dans notre jeu de données (telle personne est plus vieille que telle autre personne par exemple).
 La conservation de ce genre d’informations sous cette forme n’est donc pas recommandée pour garantir pleinement la confidentialité d’une donnée. Les valeurs stockées dans la base de données ne doivent pas rendre possible ce problème d’inférence.
