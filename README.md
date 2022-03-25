@@ -103,7 +103,7 @@ D'un point de vue utilisation, l’utilisateur précise le nom ainsi que la vale
 - Additionner les âges de deux personnes
 - Comparer les âges de deux personnes 
 
-!!SCREEN WEBUI!!
+![1](https://user-images.githubusercontent.com/26573507/160178105-665354a4-1b55-4604-924a-707bff54049e.png)
 
 L’implémentation finale reprend le principe logique suivant, qui confirme le fonctionnement de la relation d’ordre lors de requêtes de comparaison :
 
@@ -113,27 +113,27 @@ Voici maintenant un aperçu de l'exécution des fonctions présentent :
 
 - Afficher la table Age chiffrée
 
-!!SCREEN!!
+![2](https://user-images.githubusercontent.com/26573507/160178136-5102c92b-45c9-4333-be35-d3065d7ba1c2.png)
 
 - Afficher la table Age déchiffrée
 
-!!SCREEN!!
+![3](https://user-images.githubusercontent.com/26573507/160178166-6967b97a-c194-4de8-bd39-2584e4962d68.png)
 
 - Insérer une nouvelle personne
 
-!!SCREEN!!
+![4](https://user-images.githubusercontent.com/26573507/160178193-653c1aae-c36f-4af4-9ec4-586b38c2d259.png)
 
 - Mettre à jour une personne
 
-!!SCREEN!!
+![5](https://user-images.githubusercontent.com/26573507/160178214-45a17e30-220b-465d-b8c6-17298b4d412d.png)
 
 - Supprimer une personne
 
-!!SCREEN!!
+![6](https://user-images.githubusercontent.com/26573507/160178230-766aa7ba-c1fc-4459-b948-17fab9c9f434.png)
 
 - Comparer les âges de deux personnes 
 
-!!SCREEN!!
+![8](https://user-images.githubusercontent.com/26573507/160178284-a09cdbb2-ba21-4a42-80d5-da79d0490c72.png)
 
 Pour conclure cette implémentation d'algorithme ORE, nous pouvons dire qu'il permet de garantir la confidentialité des données, mais les comparaisons permettent tout de même de récupérer des informations importantes de notre table. En effet, nous pouvons connaître les relations d'ordre qui sont en vigueur dans notre jeu de données (telle personne est plus vieille que telle autre personne par exemple).
 La conservation de ce genre d’informations sous cette forme n’est donc pas recommandée pour garantir pleinement la confidentialité d’une donnée. Les valeurs stockées dans la base de données ne doivent pas rendre possible ce problème d’inférence.
