@@ -183,6 +183,7 @@ def webui():
             # Generation du payload + envoi vers l'app serveur
             payload = {'nom1':str(nom1), 'nom2':str(nom2)}
             r = requests.post("http://"+server_host+":5000/sumPost", json=payload)
+            # Temps d'arrêt pour que le serveur traite la demande et mette à disposition le résultat en GET 
             time.sleep(2)
             # Récupération de la réponse de l'app serveur
             r = requests.get("http://"+server_host+":5000/sumPost", json=payload).json()
@@ -192,8 +193,8 @@ def webui():
             # Regeneration de l'objet
             encryptedSommeObject = paillier.EncryptedNumber(public_key,cipherSomme,exponentSomme)
             # Dechiffrement de la somme
-            encryptedSommeCipher = private_key.decrypt(encryptedSommeObject)
-            result = "La somme des deux âges est : " + str(encryptedSommeCipher)
+            somme = private_key.decrypt(encryptedSommeObject)
+            result = "La somme des deux âges est : " + str(somme)
             return json.dumps({"response":result})
             
         # Comparer ages de deux personnes
