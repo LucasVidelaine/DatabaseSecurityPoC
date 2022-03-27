@@ -195,3 +195,6 @@ def transfertEncryptedNumber():
 ```
 Pour résumé, étant donné que la clé privée est stockée côté client, les données en base de données sont sécurisées. En revanche, ce type de chiffrement devient intéressant puisque la clé publique est directement stockée dans la base de données. Comme observé, par définition, l’addition homomorphique n’ayant besoin que de la clé publique pour additionner deux données chiffrées, toutes les données stockées en base peuvent être manipulées en garantissant la confidentialité du calcul.
 En effet, comme nous allons le voir dans les prochaines requêtes, lors de la demande d’un calcul par le client, les requêtes viendront directement récupérer l’intégralité de l’objet requêté pour pouvoir effectuer une somme du côté du serveur. Cette fonctionnalité permet alors une protection optimale des données côté base de données car seul le middleware client, disposant de la clé privée, sera capable de déchiffrer le contenu de l’objet.
+
+![FONCTIONNEMENT_SOMME](https://user-images.githubusercontent.com/26573507/160289495-a62bfccd-da64-420a-a6b9-875c16cfc63c.png)
+
