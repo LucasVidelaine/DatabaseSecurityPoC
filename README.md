@@ -82,7 +82,7 @@ sudo docker-compose down
 
 **URL de l'interface web :** http://localhost:8000 
 
-Nos Middlewares sont entièrements développés en Python, avec le framework Flask afin de pouvoir fonctionner comme une sorte d'API simplifié, et desservant un interface web utilisateur "WebUI". *L'ensemble des applications sont fonctionnelles, mais le code n'est pas optimal et gagnerait à être largement renforcé, faute de temps.*
+Nos Middlewares sont entièrement développés en Python, avec le framework Flask afin de pouvoir fonctionner comme une sorte d'API simplifié, et desservant un interface web utilisateur "WebUI". *Les applications sont fonctionnelles, mais le code n'est pas optimal et gagnerait à être largement renforcé, faute de temps.*
 
 ### Chiffrement ORE - Order Revealing Encryption
 
@@ -93,7 +93,7 @@ L'application Middleware client est donc une preuve de concept répondant au pri
 ![SCHEMA_LOGIQUE_CLIENT](https://user-images.githubusercontent.com/26573507/160190215-cde179f9-c84a-4674-85b8-16eab4b211d6.png)
 
 Nous souhaitons montrer l’implémentation d’un chiffrement de type ORE (Order Revealing Encryption) permettant l’insertion de valeurs chiffrées au sein d’une table "age" contenant des âges. Ces âges seront donc stockés chiffrés. L’avantage d’un chiffrement ORE est qu’il conserve la relation d’ordre, ainsi, le SGBD pourra parfaitement répondre à des requêtes de comparaison sur ce type de données, tout en garantissant leur confidentialité lors des requêtes.
-Afin de fonctionner, l'algorithme nécessite l'usage d'un clé. Dans notre cas, et par soucis de facilité, nous avons inscrit cette clé en dur dans le code client du middleware.
+Afin de fonctionner, l'algorithme nécessite l'usage d'une clé symétrique. Dans notre cas, et par soucis de facilité, nous avons inscrit cette clé en dur dans le code client du middleware.
 D'un point de vue utilisation, l’utilisateur précise le nom ainsi que la valeur de l'âge à modifier en clair vers le middleware et ce dernier retourne la valeur chiffrée du salaire qu’il renseigne directement dans la base de données en fonction de la personne choisie. A ce stade, nous avons donc plusieurs fonctionnalités en place : 
 - Afficher la table Age chiffrée
 - Afficher la table Age déchiffrée
@@ -259,7 +259,7 @@ def calculsomme(nom1, nom2):
     return serieSomme
 ```
 
-Enfin du côté client, nous récupérons la valeur résultat de la somme mise à disposition par le middleware serveur.
+Enfin du côté client, nous récupérons la réponse mise à disposition par le middleware serveur.
 
 ```python
 # Temps d'arrêt pour que le serveur traite la demande et mette à disposition le résultat en GET 
