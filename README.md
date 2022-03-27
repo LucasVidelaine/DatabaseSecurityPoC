@@ -182,7 +182,7 @@ payload = {'nom':str(nom), 'HOM_age':serialized}
 r = requests.post("http://"+server_host+":5000/encrypted", json=payload)
 ```
 Il nous suffit alors de récupérer les informations qui nous intéressent dans l'objet généré par *encrypt* afin de les sérialiser au format JSON. Ainsi, nous pouvons transmettre les données à l'aide du requête POST vers le middleware serveur.\
-Sur le serveur, nous récupérons la requête reçue sur la route */encrypted* prévue et avec la méthode POST attendue. Une fois cela fait, il nous suffit de transmettre les informations à une fonction permettant la mise à jour de la donnée dans la table *age*.
+Sur le serveur, nous récupérons la requête reçue sur l'endpoint */encrypted* prévue et avec la méthode POST attendue. Une fois cela fait, il nous suffit de transmettre les informations à une fonction permettant la mise à jour de la donnée dans la table *age*.
 ```python
 #Page servant à l'ajout du HOM_age à la base de données
 @app.route('/encrypted', methods=['POST'])
@@ -195,8 +195,78 @@ def transfertEncryptedNumber():
     updateHOMage(data.get('nom'), receivedEncrypted)
     return "JSON received & HOM updated"
 ```
+
 Pour résumé, étant donné que la clé privée est stockée côté client, les données en base de données sont sécurisées. En revanche, ce type de chiffrement devient intéressant puisque la clé publique est directement stockée dans la base de données. Comme observé, par définition, l’addition homomorphique n’ayant besoin que de la clé publique pour additionner deux données chiffrées, toutes les données stockées en base peuvent être manipulées en garantissant la confidentialité du calcul.
 En effet, comme nous allons le voir dans les prochaines requêtes, lors de la demande d’un calcul par le client, les requêtes viendront directement récupérer l’intégralité de l’objet requêté pour pouvoir effectuer une somme du côté du serveur. Cette fonctionnalité permet alors une protection optimale des données côté base de données car seul le middleware client, disposant de la clé privée, sera capable de déchiffrer le contenu de l’objet.
 
+Finalement, le fonctionnement du calcul de somme sur les âges des personnes présentes dans la base de données est détaillé ci-dessous :
 ![FONCTIONNEMENT_SOMME](https://user-images.githubusercontent.com/26573507/160289495-a62bfccd-da64-420a-a6b9-875c16cfc63c.png)
 
+Pour commencer, le client prépare la requête à envoyer au middleware serveur, contenant le nom1 et le nom2, représentant les noms des personnes dont les âges sont à additionner. La requête est envoyée au middleware serveur à l'aide d'un POST, sur l'endpoint */sumPost*.
+```python
+# Generation du payload + envoi vers l'app serveur
+payload = {'nom1':str(nom1), 'nom2':str(nom2)}
+r = requests.post("http://"+server_host+":5000/sumPost", json=payload)
+```
+
+Sur le serveur, nous récupérons la requête POST et exécutons la fonction *calculSomme()*. En retour de cette fonction, nous aurons l'objet somme, que nous retournerons au client au travers de la prochaine méthode GET (expliquant le *sleep()* côté client une fois le POST effectué).
+```python
+@app.route('/sumPost', methods=['GET', 'POST'])
+def traitementSomme():
+#Récupération du contenu posté par le client
+data= request.get_json()
+nom1 = data.get('nom1')
+nom2 = data.get('nom2')
+#Calcul de la somme
+seriesomme = calculsomme(nom1,nom2)
+return seriesomme
+```
+Fonction *calculSomme()* 
+```python
+#Fonction de calcul de la somme des HOM_age entre deux personnes
+def calculsomme(nom1, nom2):
+    connec = db_connexion(db_user,db_password,db_host,db_db)
+    cur = connec.cursor()
+    query = "SELECT HOM_age FROM age WHERE nom=(%s) OR nom=(%s)"
+    cur.execute(query, (nom1, nom2))
+
+    somme = 0
+    for HOM_age in cur:
+        #Chargement des attributs dans une variables
+        recuperationHOM = json.loads(HOM_age[0])
+        #Recuperation de la clé publique
+        n = recuperationHOM['public_key']
+        public_key = paillier.PaillierPublicKey(n=int(n))
+        #Regénération de l'objet chiffré
+        age = paillier.EncryptedNumber(public_key, int(recuperationHOM['ciphertext']), int(recuperationHOM['exponent']))
+        #Somme des ages
+        somme += age  
+    cur.close
+    db_close(connec)
+
+    #Sérialisation de la somme
+    serieSomme = {
+        'public_key': public_key.n,
+        'ciphertext': str(somme.ciphertext()),
+        'exponent': somme.exponent
+    }
+
+    return serieSomme
+```
+Enfin du côté client, nous récupérons la valeur résultat de la somme mise à disposition par le middleware serveur.
+```python
+# Temps d'arrêt pour que le serveur traite la demande et mette à disposition le résultat en GET 
+time.sleep(2)
+# Récupération de la réponse de l'app serveur
+r = requests.get("http://"+server_host+":5000/sumPost", json=payload).json()
+```
+Puis nous reformons l'objet correctement avant de finalement exploiter la méthode *decrypt* afin de récupérer la valeur de la somme en clair.
+```python
+# Reconstitution et Déchiffrement du message
+cipherSomme = int(r.get('ciphertext'))
+exponentSomme = int(r.get('exponent'))
+# Regeneration de l'objet
+encryptedSommeObject = paillier.EncryptedNumber(public_key,cipherSomme,exponentSomme)
+# Dechiffrement de la somme
+somme = private_key.decrypt(encryptedSommeObject)
+```
