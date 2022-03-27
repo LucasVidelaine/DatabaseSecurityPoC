@@ -183,6 +183,7 @@ r = requests.post("http://"+server_host+":5000/encrypted", json=payload)
 ```
 Il nous suffit alors de récupérer les informations qui nous intéressent dans l'objet généré par *encrypt* afin de les sérialiser au format JSON. Ainsi, nous pouvons transmettre les données à l'aide du requête POST vers le middleware serveur.\
 Sur le serveur, nous récupérons la requête reçue sur l'endpoint */encrypted* prévue et avec la méthode POST attendue. Une fois cela fait, il nous suffit de transmettre les informations à une fonction permettant la mise à jour de la donnée dans la table *age*.
+
 ```python
 #Page servant à l'ajout du HOM_age à la base de données
 @app.route('/encrypted', methods=['POST'])
@@ -203,6 +204,7 @@ Finalement, le fonctionnement du calcul de somme sur les âges des personnes pr�
 ![FONCTIONNEMENT_SOMME](https://user-images.githubusercontent.com/26573507/160289495-a62bfccd-da64-420a-a6b9-875c16cfc63c.png)
 
 Pour commencer, le client prépare la requête à envoyer au middleware serveur, contenant le nom1 et le nom2, représentant les noms des personnes dont les âges sont à additionner. La requête est envoyée au middleware serveur à l'aide d'un POST, sur l'endpoint */sumPost*.
+
 ```python
 # Generation du payload + envoi vers l'app serveur
 payload = {'nom1':str(nom1), 'nom2':str(nom2)}
@@ -210,6 +212,7 @@ r = requests.post("http://"+server_host+":5000/sumPost", json=payload)
 ```
 
 Sur le serveur, nous récupérons la requête POST et exécutons la fonction *calculSomme()*. En retour de cette fonction, nous aurons l'objet somme, que nous retournerons au client au travers de la prochaine méthode GET (expliquant le *sleep()* côté client une fois le POST effectué).
+
 ```python
 @app.route('/sumPost', methods=['GET', 'POST'])
 def traitementSomme():
@@ -221,7 +224,9 @@ nom2 = data.get('nom2')
 seriesomme = calculsomme(nom1,nom2)
 return seriesomme
 ```
-Fonction *calculSomme()* 
+
+Fonction *calculSomme()* qui permet de récupérer les objets voulus dans la base de données et de sérialiser la somme chiffrée à retourner.
+
 ```python
 #Fonction de calcul de la somme des HOM_age entre deux personnes
 def calculsomme(nom1, nom2):
@@ -253,14 +258,18 @@ def calculsomme(nom1, nom2):
 
     return serieSomme
 ```
+
 Enfin du côté client, nous récupérons la valeur résultat de la somme mise à disposition par le middleware serveur.
+
 ```python
 # Temps d'arrêt pour que le serveur traite la demande et mette à disposition le résultat en GET 
 time.sleep(2)
 # Récupération de la réponse de l'app serveur
 r = requests.get("http://"+server_host+":5000/sumPost", json=payload).json()
 ```
+
 Puis nous reformons l'objet correctement avant de finalement exploiter la méthode *decrypt* afin de récupérer la valeur de la somme en clair.
+
 ```python
 # Reconstitution et Déchiffrement du message
 cipherSomme = int(r.get('ciphertext'))
@@ -270,3 +279,5 @@ encryptedSommeObject = paillier.EncryptedNumber(public_key,cipherSomme,exponentS
 # Dechiffrement de la somme
 somme = private_key.decrypt(encryptedSommeObject)
 ```
+
+Pour conclure, nous pouvons dire que ce PoC impliquant du chiffrement homomorphique en base de données garantit la confidentialité des échanges et l'intégrité des données. Il faudrait néanmoins renforcer la robustesse des paires de clé en augmentant leur taille pour s'assurer qu'il ne soit pas possible de les casser dans un temps suffisamment court. Malheureusement, augmenter la taille des clés aurait un impact significatif sur les performances des applications sous jacentes, et rendrait l'usage difficle pour tout usage en temps réel.
