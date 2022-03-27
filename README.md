@@ -141,6 +141,8 @@ Il est donc nécessaire de trouver un autre moyen d’effectuer ce genre d’op�
 
 Pour cette dernière partie, nous avons décidé d'implémenter l'algorithme de chiffrement homomorphique du cryptosystème de Paillier. Le principe de cet algorithme reprend la logique de l'algorithme de cryptographie asymétrique RSA, en impliquant la génération d'une paire de clé (respectivement publique et privée).
 
+*Seuls certains interpréteurs Markdown sont capables d'afficher les symboles et opérateurs mathématiques propres aux formules ci-après. N'hésitez pas à utiliser un autre interpreteur au besoin (Visual Studio Code par exemple).*
+
 Formule de calcul de la clé publique : *pk = N = p . q*\
 Formule de calcul de la clé privée : *sk = $\varphi$ (N) = (p - 1) . (q . -1)*\
 Formule de chiffrement d'un message : Soit *m* un message que l'on souhaite chiffrer avec 0 $\le$ *m* $<$ N. Soit *r*, un entier aléatoire tel que 0 $<$ *r* $<$ N (appelé aléa). Le chiffré est alors : *c = $(1 + N)^n$ . $r^N$ mod $N^2$*.\
